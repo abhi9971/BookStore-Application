@@ -1,13 +1,14 @@
 package com.BookStoreApplication.service;
 
 import com.BookStoreApplication.dto.CartDTO;
+import com.BookStoreApplication.dto.ResponseDTO;
 import com.BookStoreApplication.model.Cart;
 import java.util.List;
 import java.util.Optional;
 
 public interface ICartService {
 
-    List<Cart> getCartDetails();
+    ResponseDTO getCartDetails();
 
     Optional<Cart> getCartDetailsById(Integer cartId);
 
@@ -18,4 +19,10 @@ public interface ICartService {
     Cart insertItems(CartDTO cartdto);
 
     Cart updateQuantity(Integer id, Integer quantity);
+
+    Cart increaseQuantity(Integer id);
+
+    Cart decreaseQuantity(Integer id);
+
+    Cart getCartRecordByBookId(Integer bookID);
 }

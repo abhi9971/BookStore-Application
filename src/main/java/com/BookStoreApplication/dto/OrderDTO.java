@@ -9,6 +9,7 @@ public class OrderDTO {
     @NotEmpty(message="Please provide address")
     private String address;
     private Integer userId;
-    private Integer id;
+    private Integer bookId;
     private boolean cancel;
+    private Integer price;
 }

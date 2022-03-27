@@ -51,7 +51,23 @@ public class UserService implements IUserService {
         }
 
     }
+    @Override
+    public int loginUserTest(String email_id, String password) {
+        Optional<UserRegistration> login = userRepository.findByEmailid(email_id);
+        if(login.isPresent()){
+            String pass = login.get().getPassword();
+            System.out.println(pass);
+            System.out.println(password);
+            if(login.get().getPassword().equals(password)){
+                return 1;// sucussfull login
+            }
 
+            else {
+                return 2;   //"Wrong Password";
+            }
+        }
+        return  0;       //"User not found";
+    }
 
     @Override
     public String loginUser(String email_id, String password) {
@@ -132,17 +148,17 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public UserRegistration updateRecordByToken(String token, UserDTO userDTO) {
-        Integer id= util.decodeToken(token);
+    public UserRegistration updateRecordByToken(Integer id, UserDTO userDTO) {
+//        Integer id= util.decodeToken(token);
         Optional<UserRegistration> addressBook = userRepository.findById(id);
         if(addressBook.isEmpty()) {
             throw new BookStoreException("User Details for id not found");
         }
         UserRegistration newBook = new UserRegistration(id,userDTO);
         userRepository.save(newBook);
-        mailService.sendEmail(newBook.getEmail(), "Test Email", "Updated SuccessFully, hii: "
-                +newBook.getFirstName()+"Please Click here to get data of updated id-> "
-                +"http://localhost:8080/user/update/"+token);
+//        mailService.sendEmail(newBook.getEmail(), "Test Email", "Updated SuccessFully, hii: "
+//                +newBook.getFirstName()+"Please Click here to get data of updated id-> "
+//                +"http://localhost:8080/user/update/"+token);
         return newBook;
     }
 

@@ -13,11 +13,11 @@ import javax.persistence.Id;
 public class Book {
     @Id
     @GeneratedValue
-    private Integer BookId;
-    private String bookName;
-    private String authorName;
-    private String bookDescription;
-    private String bookImage;
+    private Integer bookId;
+    private String  bookName;
+    private String  authorName;
+    private String  bookDescription;
+    private String  bookImage;
     private Integer price;
     private Integer quantity;
 
@@ -29,8 +29,8 @@ public class Book {
         this.quantity=bookDTO.getQuantity();
         this.bookName=bookDTO.getBookName();
     }
-    public Book(Integer BookId, BookDTO bookDTO){
-        this.BookId=BookId;
+    public Book(Integer bookId, BookDTO bookDTO){
+        this.bookId=bookId;
         this.bookName=bookDTO.getBookName();
         this.authorName=bookDTO.getAuthorName();
         this.bookImage=bookDTO.getBookImage();

@@ -56,20 +56,20 @@ public class BookService implements IBookService{
 
 
     @Override
-    public Object deleteRecordByToken(int BookId) {
+    public String deleteRecordByToken(int BookId) {
         Optional<Book> newBook = bookStoreRepository.findById(BookId);
         if (newBook.isEmpty()) {
             throw new BookStoreException("Book record does not found");
         } else {
            bookStoreRepository.deleteById(BookId);
         }
-        return null;
+        return "data deleted succesfull";
     }
 
 
     @Override
-    public Optional<Book> getBookByName(String bookName) {
-        Optional<Book> findBook= Optional.ofNullable(bookStoreRepository.findByBookName(bookName));
+    public List<Book> getBookByName(String bookName) {
+        List<Book> findBook= bookStoreRepository.findByBookName(bookName);
         if(findBook.isEmpty()){
             throw new BookStoreException(" Details for provided Book is not found");
         }

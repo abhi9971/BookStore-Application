@@ -25,5 +25,6 @@ public interface IUserService {
 
     List<UserRegistration> getAllUserDataByToken(String token);
 
-    UserRegistration updateRecordByToken(String token, UserDTO userDTO);
+    UserRegistration updateRecordByToken(Integer id, UserDTO userDTO);
+    public int loginUserTest(String email_id, String password);
 }

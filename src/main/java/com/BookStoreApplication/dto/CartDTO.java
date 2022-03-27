@@ -7,7 +7,7 @@ import javax.validation.constraints.NotNull;
 @Data
 public class CartDTO {
     private Integer userId;
-    private Integer BookId;
+    private Integer bookId;
     @NotNull(message="Book quantity yet to be provided")
     private Integer quantity;
 }

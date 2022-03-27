@@ -7,6 +7,7 @@ import java.time.LocalDate;
 
 @Entity
 @Data
+@Table(name="orderDetails")
 public class Order {
     @Id
     @GeneratedValue
@@ -19,7 +20,7 @@ public class Order {
     @JoinColumn(name="userId")
     private UserRegistration user;
     @ManyToOne
-    @JoinColumn(name="id")
+    @JoinColumn(name="bookId")
     private Book book;
     private boolean cancel;
 

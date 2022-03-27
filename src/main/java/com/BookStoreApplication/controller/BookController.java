@@ -17,6 +17,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/book")
+@CrossOrigin
 public class BookController {
 
        @Autowired
@@ -54,12 +55,13 @@ public class BookController {
             ResponseDTO dto = new ResponseDTO("Book Record deleted successfully", bookService.deleteRecordByToken(BookId));
             return new ResponseEntity(dto,HttpStatus.OK);
         }
-
-        //Search by Name
-        @GetMapping(value = "searchByBookName/{name}")
-        public Optional<Book> getBookByName(@PathVariable("name") String name) {
-            return bookService.getBookByName(name);
-        }
+    @GetMapping("searchByBookName/{name}")
+    public ResponseEntity<ResponseDTO> getBookByName(@PathVariable("name") String name)
+    {
+       List<Book> listOfBooks = bookService.getBookByName(name);
+        ResponseDTO dto = new ResponseDTO("Data retrieved successfully (:",listOfBooks);
+        return new ResponseEntity(dto,HttpStatus.OK);
+    }
 
         //update record by id
         @PutMapping("/updateBookById/{BookId}")
@@ -68,21 +70,34 @@ public class BookController {
             ResponseDTO dto = new ResponseDTO(" Book Record updated successfully by Id",updateRecord);
             return new ResponseEntity(dto,HttpStatus.ACCEPTED);
         }
-
+    @GetMapping("/sortAsc")
+    public ResponseEntity<ResponseDTO> getBooksInAscendingOrder()
+    {
+        List<Book> listOfBooks = bookService.sortedListOfBooksInAscendingOrder();
+        ResponseDTO dto = new ResponseDTO("Data retrieved successfully (:",listOfBooks);
+        return new ResponseEntity(dto,HttpStatus.OK);
+    }
+    @GetMapping("/sortDesc")
+    public ResponseEntity<ResponseDTO> getBooksInDescendingOrder()
+    {
+        List<Book> listOfBooks =bookService.sortedListOfBooksInDescendingOrder();
+        ResponseDTO dto = new ResponseDTO("Data retrieved successfully (:",listOfBooks);
+        return new ResponseEntity(dto,HttpStatus.OK);
+    }
         //sort books by name in ascending order
-        @GetMapping("/sortAsc")
-        public List<Book> getBooksInAscendingOrder(){
-            return bookService.sortedListOfBooksInAscendingOrder();
-        }
 
-        //sort books by name in descending order
-        @GetMapping("/sortDesc")
-        public List<Book> getBooksInDescendingOrder(){
-            return bookService.sortedListOfBooksInDescendingOrder();
-        }
+//        public List<Book> getBooksInAscendingOrder(){
+//            return ;
+//        }
+
+//        //sort books by name in descending order
+//        @GetMapping("/sortDesc")
+//        public List<Book> getBooksInDescendingOrder(){
+//            return bookService.sortedListOfBooksInDescendingOrder();
+//        }
 
     @PutMapping("/updateQuantity/{id}")
-    public ResponseEntity<ResponseDTO> updateQuantity(@PathVariable Integer id,@RequestParam Integer quantity){
+    public ResponseEntity<ResponseDTO> updateQuantity(@PathVariable Integer id,@RequestBody Integer quantity){
         Book newBook = bookService.updateQuantity(id,quantity);
         ResponseDTO dto = new ResponseDTO("Quantity for book record updated successfully !",newBook);
         return new ResponseEntity(dto,HttpStatus.OK);

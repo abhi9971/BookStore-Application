@@ -15,6 +15,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/cart")
+@CrossOrigin
 public class CartController {
 
     @Autowired
@@ -27,10 +28,9 @@ public class CartController {
         return new ResponseEntity(responseDTO, HttpStatus.CREATED);
     }
     @GetMapping("/getAll")
-    public ResponseEntity<ResponseDTO> getAllCartDetails(){
-        List<Cart> cartDetails= cartService.getCartDetails();
-        ResponseDTO responseDTO=new ResponseDTO("successfully retrieved data",cartDetails);
-        return new ResponseEntity(responseDTO,HttpStatus.OK);
+    public ResponseDTO getAllCartDetails() {
+        ResponseDTO responseDTO = cartService.getCartDetails();
+        return responseDTO;
     }
 
     @GetMapping("/getById/{cartId}")
@@ -39,12 +39,40 @@ public class CartController {
         ResponseDTO responseDTO=new ResponseDTO("Cart details retrieved successfully",specificCartDetail);
         return new ResponseEntity(responseDTO,HttpStatus.ACCEPTED);
     }
-    @DeleteMapping("/delete/{cartId}")
-    public ResponseEntity<ResponseDTO> deleteCartById(@PathVariable Integer cartId){
-        Optional<Cart> delete=cartService.deleteCartItemById(cartId);
-        ResponseDTO responseDTO=new ResponseDTO("Cart delete successfully", delete);
-        return new ResponseEntity(responseDTO,HttpStatus.OK);
+    @GetMapping("/retrieveCartByBookId/{bookID}")
+    public ResponseEntity<ResponseDTO> getCartRecordByBookId(@PathVariable Integer bookID){
+        Cart newCart = cartService.getCartRecordByBookId(bookID);
+        ResponseDTO dto = new ResponseDTO("Record retrieved successfully !",newCart);
+        return new ResponseEntity(dto,HttpStatus.OK);
     }
+
+    @GetMapping("/increaseQuantity/{id}")
+    public ResponseEntity<ResponseDTO> increaseQuantity(@PathVariable Integer id){
+        Cart newCart = cartService.increaseQuantity(id);
+        ResponseDTO dto = new ResponseDTO("Quantity for book record updated successfully !",newCart);
+        return new ResponseEntity(dto,HttpStatus.OK);
+    }
+
+    @GetMapping("/decreaseQuantity/{id}")
+    public ResponseEntity<ResponseDTO> decreaseQuantity(@PathVariable Integer id){
+        Cart newCart = cartService.decreaseQuantity(id);
+        ResponseDTO dto = new ResponseDTO("Quantity for book record updated successfully !",newCart);
+        return new ResponseEntity(dto,HttpStatus.OK);
+    }
+//    @DeleteMapping("/delete/{cartId}")
+//    public ResponseEntity<ResponseDTO> deleteCartById(@PathVariable Integer cartId){
+////        Optional<Cart> delete=cartService.deleteCartItemById(cartId);
+//        ResponseDTO responseDTO=new ResponseDTO("Cart delete successfully", cartService.deleteCartItemById(cartId));
+//        return new ResponseEntity(responseDTO,HttpStatus.OK);
+//    }
+
+    @DeleteMapping("/delete/{cartId}")
+    public ResponseEntity<ResponseDTO> deleteCartById(@PathVariable Integer cartId) {
+        Optional<Cart> delete = cartService.deleteCartItemById(cartId);
+        ResponseDTO responseDTO = new ResponseDTO("Cart delete successfully", delete);
+        return new ResponseEntity(responseDTO, HttpStatus.OK);
+    }
+
     @PutMapping("/updateById/{cartId}")
     public ResponseEntity<ResponseDTO> updateCartById(@PathVariable Integer cartId,@Valid @RequestBody CartDTO cartDTO){
         Cart updateRecord = cartService.updateRecordById(cartId,cartDTO);

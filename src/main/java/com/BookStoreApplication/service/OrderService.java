@@ -26,7 +26,7 @@ public class OrderService implements IOrderService {
     private UserRegistrationRepository userRepo;
 
     public Order insertOrder(OrderDTO orderdto) {
-        Optional<Book> book = bookRepo.findById(orderdto.getId());
+        Optional<Book> book = bookRepo.findById(orderdto.getBookId());
         Optional<UserRegistration> user = userRepo.findById(orderdto.getUserId());
         if (book.isPresent() && user.isPresent()) {
             if (orderdto.getQuantity()< book.get().getQuantity()) {
@@ -60,7 +60,7 @@ public class OrderService implements IOrderService {
 
     public Order updateOrderRecord(Integer id, OrderDTO dto) {
         Optional<Order> order = orderRepo.findById(id);
-        Optional<Book> book = bookRepo.findById(dto.getId());
+        Optional<Book> book = bookRepo.findById(dto.getBookId());
         Optional<UserRegistration> user = userRepo.findById(dto.getUserId());
         if (order.isEmpty()) {
             throw new BookStoreException("Order Record doesn't exists");

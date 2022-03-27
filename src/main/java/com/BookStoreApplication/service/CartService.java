@@ -1,6 +1,7 @@
 package com.BookStoreApplication.service;
 
 import com.BookStoreApplication.dto.CartDTO;
+import com.BookStoreApplication.dto.ResponseDTO;
 import com.BookStoreApplication.exception.BookStoreException;
 import com.BookStoreApplication.model.Book;
 import com.BookStoreApplication.model.Cart;
@@ -26,16 +27,33 @@ public class CartService implements ICartService{
     BookStoreCartRepository bookStoreCartRepository;
 
 
-    @Override
-    public List<Cart> getCartDetails() {
-        List<Cart> getCartDetails=bookStoreCartRepository.findAll();
-        if (getCartDetails.isEmpty()){
-            throw new BookStoreException(" Not found Any Cart details ");
-        }
-        else {
-            return getCartDetails;
-        }
+//    @Override
+//    public List<Cart> getCartDetails() {
+//        List<Cart> getCartDetails=bookStoreCartRepository.findAll();
+//        if (getCartDetails.isEmpty()){
+//            throw new BookStoreException(" Not found Any Cart details ");
+//        }
+//        else {
+//            return getCartDetails;
+//        }
+//    }
+@Override
+public ResponseDTO getCartDetails() {
+    List<Cart> getCartDetails=bookStoreCartRepository.findAll();
+    ResponseDTO dto= new ResponseDTO();
+    if (getCartDetails.isEmpty()){
+        String   message=" Not found Any Cart details ";
+        dto.setMessage(message);
+        dto.setData(0);
+        return dto;
+
     }
+    else {
+        dto.setMessage("the list of cart items is sucussfully retrived");
+        dto.setData(getCartDetails);
+        return dto;
+    }
+}
 
     @Override
     public Optional<Cart> getCartDetailsById(Integer cartId) {
@@ -48,10 +66,23 @@ public class CartService implements ICartService{
         }
     }
 
+    public Cart getCartRecordByBookId(Integer bookId) {
+        Optional<Cart> cart = bookStoreCartRepository.findByBookId(bookId);
+        if(cart.isEmpty()) {
+            return null;
+            //throw new BookStoreException("Cart Record doesn't exists");
+        }
+        else {
+            log.info("Cart record retrieved successfully for book id "+bookId);
+            return cart.get();
+        }
+    }
+
     @Override
     public Optional<Cart> deleteCartItemById(Integer cartId) {
         Optional<Cart> deleteData=bookStoreCartRepository.findById(cartId);
         if (deleteData.isPresent()){
+            bookStoreCartRepository.deleteById(cartId);
             return deleteData;
         }
         else {
@@ -108,6 +139,44 @@ public class CartService implements ICartService{
                 log.info("Quantity in cart record updated successfully");
                 book.get().setQuantity(book.get().getQuantity() - (quantity - cart.get().getQuantity()));
                 bookStoreRepository.save(book.get());
+                return cart.get();
+            }
+            else {
+                throw new BookStoreException("Requested quantity is not available");
+            }
+        }
+    }
+
+    public Cart increaseQuantity(Integer id) {
+        Optional<Cart> cart = bookStoreCartRepository.findById(id);
+        Optional<Book>  book = bookStoreRepository.findById(cart.get().getBook().getBookId());
+        if(cart.isEmpty()) {
+            throw new BookStoreException("Cart Record doesn't exists");
+        }
+        else {
+            if(cart.get().getQuantity() < book.get().getQuantity()) {
+                cart.get().setQuantity(cart.get().getQuantity()+1);
+                bookStoreCartRepository.save(cart.get());
+                log.info("Quantity in cart record updated successfully");
+                return cart.get();
+            }
+            else {
+                throw new BookStoreException("Requested quantity is not available");
+            }
+        }
+    }
+
+    public Cart decreaseQuantity(Integer id) {
+        Optional<Cart> cart = bookStoreCartRepository.findById(id);
+        Optional<Book>  book = bookStoreRepository.findById(cart.get().getBook().getBookId());
+        if(cart.isEmpty()) {
+            throw new BookStoreException("Cart Record doesn't exists");
+        }
+        else {
+            if(cart.get().getQuantity() < book.get().getQuantity()) {
+                cart.get().setQuantity(cart.get().getQuantity()-1);
+                bookStoreCartRepository.save(cart.get());
+                log.info("Quantity in cart record updated successfully");
                 return cart.get();
             }
             else {
